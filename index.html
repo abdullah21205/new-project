@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS CI/CD Pipeline Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <header class="bg-indigo-700 text-white py-10 shadow-lg">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl font-bold mb-2">AWS CI/CD Pipeline Infrastructure</h1>
+            <p class="text-indigo-100 text-lg">Jenkins | SonarQube | Docker</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-blue-500">
+                <div class="flex items-center mb-4">
+                    <i class="fa-brands fa-jenkins text-3xl text-blue-500 mr-3"></i>
+                    <h2 class="text-xl font-bold">Server 1: Jenkins</h2>
+                </div>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex justify-between"><span>Instance:</span> <span class="font-mono bg-slate-100 px-2">t2.micro</span></li>
+                    <li class="flex justify-between"><span>Ports:</span> <span class="font-mono bg-slate-100 px-2">8080, 22</span></li>
+                    <li class="text-slate-500 italic mt-2">The "Manager" - Orchestrates the builds and pulls from GitHub.</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-orange-500">
+                <div class="flex items-center mb-4">
+                    <i class="fa-solid fa-magnifying-glass-chart text-3xl text-orange-500 mr-3"></i>
+                    <h2 class="text-xl font-bold">Server 2: SonarQube</h2>
+                </div>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex justify-between"><span>Instance:</span> <span class="font-mono bg-slate-100 px-2">t2.medium</span></li>
+                    <li class="flex justify-between"><span>Ports:</span> <span class="font-mono bg-slate-100 px-2">9000, 22</span></li>
+                    <li class="text-slate-500 italic mt-2">The "Inspector" - Scans code for vulnerabilities and bugs.</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-cyan-500">
+                <div class="flex items-center mb-4">
+                    <i class="fa-brands fa-docker text-3xl text-cyan-500 mr-3"></i>
+                    <h2 class="text-xl font-bold">Server 3: Docker</h2>
+                </div>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex justify-between"><span>Instance:</span> <span class="font-mono bg-slate-100 px-2">t2.micro</span></li>
+                    <li class="flex justify-between"><span>Ports:</span> <span class="font-mono bg-slate-100 px-2">80, 22</span></li>
+                    <li class="text-slate-500 italic mt-2">The "Builder" - Hosts the final containerized website.</li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="bg-white rounded-2xl shadow-sm p-8 mb-12 border border-slate-200">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="fa-solid fa-key text-indigo-600 mr-3"></i> Manual Authentication Strategy
+            </h2>
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-indigo-700 uppercase tracking-wider text-sm">SSH Key Exchange</h3>
+                    <p class="text-slate-600">Instead of using a PEM file, Jenkins connects to Docker via Public Key Authorization:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-slate-700 ml-2">
+                        <li>Generate <code class="bg-slate-100 p-1">ssh-keygen</code> on Jenkins.</li>
+                        <li>Add <code class="bg-slate-100 p-1">id_rsa.pub</code> to Docker's <code class="bg-slate-100 p-1">authorized_keys</code>.</li>
+                        <li>Add Jenkins Private Key to <strong>Publish Over SSH</strong> plugin.</li>
+                    </ol>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-indigo-700 uppercase tracking-wider text-sm">SonarQube Integration</h3>
+                    <p class="text-slate-600">Secure token-based handshake between Manager and Inspector:</p>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
+                        <li>Generate Token on SonarQube Dashboard.</li>
+                        <li>Store in Jenkins Credentials as <strong>Secret Text</strong>.</li>
+                        <li>Configure Sonar Scanner in Jenkins System Tools.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold mb-8 text-center">Continuous Deployment Flow</h2>
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-8 md:space-y-0 text-center">
+                <div class="w-full md:w-1/5">
+                    <div class="bg-indigo-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-brands fa-github text-2xl text-indigo-700"></i>
+                    </div>
+                    <p class="font-bold">1. GitHub</p>
+                    <p class="text-xs text-slate-500">Code push triggers Webhook</p>
+                </div>
+                <i class="fa-solid fa-arrow-right hidden md:block text-slate-300"></i>
+                <div class="w-full md:w-1/5">
+                    <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-brands fa-jenkins text-2xl text-blue-700"></i>
+                    </div>
+                    <p class="font-bold">2. Jenkins</p>
+                    <p class="text-xs text-slate-500">Pulls code & starts pipeline</p>
+                </div>
+                <i class="fa-solid fa-arrow-right hidden md:block text-slate-300"></i>
+                <div class="w-full md:w-1/5">
+                    <div class="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-shield-halved text-2xl text-orange-700"></i>
+                    </div>
+                    <p class="font-bold">3. SonarQube</p>
+                    <p class="text-xs text-slate-500">Static Code Analysis</p>
+                </div>
+                <i class="fa-solid fa-arrow-right hidden md:block text-slate-300"></i>
+                <div class="w-full md:w-1/5">
+                    <div class="bg-cyan-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-brands fa-docker text-2xl text-cyan-700"></i>
+                    </div>
+                    <p class="font-bold">4. Docker</p>
+                    <p class="text-xs text-slate-500">Build & Deploy Container</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-6 mt-12 text-center text-sm">
+        <p>CI/CD Pipeline Documentation | AWS Infrastructure Project</p>
+    </footer>
+
+</body>
+</html>
